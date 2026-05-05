@@ -8,5 +8,5 @@ export default defineEventHandler((event) => {
     throw createError({ statusCode: 404, statusMessage: 'Order not found' })
   }
 
-  return order
+  return new Promise(r => setTimeout(() => r(order), 2000))
 })
