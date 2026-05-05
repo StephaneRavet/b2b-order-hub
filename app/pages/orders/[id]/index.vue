@@ -27,7 +27,7 @@ const formatDate = (iso: string) =>
             <span :class="['status', `status--${order.status}`]">{{ order.status }}</span>
         </header>
 
-        <dl class="meta">
+        <dl class="meta card">
             <div>
                 <dt>Client</dt>
                 <dd>#{{ order.customerId }}</dd>
@@ -44,7 +44,7 @@ const formatDate = (iso: string) =>
 
         <section>
             <h2>Articles</h2>
-            <table class="items">
+            <table class="items card">
                 <thead>
                     <tr>
                         <th>Produit</th>
@@ -105,9 +105,6 @@ const formatDate = (iso: string) =>
     gap: 1rem;
     margin: 0;
     padding: 1rem 1.25rem;
-    background: var(--bg-elevated);
-    border: 1px solid var(--border);
-    border-radius: 8px;
 }
 
 .meta div {
@@ -138,9 +135,6 @@ section h2 {
 .items {
     width: 100%;
     border-collapse: collapse;
-    background: var(--bg-elevated);
-    border: 1px solid var(--border);
-    border-radius: 8px;
     overflow: hidden;
 }
 
@@ -169,21 +163,4 @@ section h2 {
     font-variant-numeric: tabular-nums;
 }
 
-.status {
-    font-size: 0.75rem;
-    font-weight: 500;
-    padding: 0.25rem 0.6rem;
-    border-radius: 999px;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    background: #1f2937;
-    color: #d1d5db;
-    white-space: nowrap;
-}
-
-.status--paid { background: #064e3b; color: #6ee7b7; }
-.status--shipped { background: #1e3a8a; color: #93c5fd; }
-.status--delivered { background: #14532d; color: #86efac; }
-.status--cancelled { background: #7f1d1d; color: #fca5a5; }
-.status--pending { background: #78350f; color: #fcd34d; }
 </style>
