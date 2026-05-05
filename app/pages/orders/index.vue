@@ -25,6 +25,11 @@ const { data, pending, error } = await useFetch<OrdersResponse>('/api/orders', {
 </template>
 
 <style scoped>
+h1 {
+    margin: 0 0 1.5rem;
+    font-size: 1.5rem;
+}
+
 .orders-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));

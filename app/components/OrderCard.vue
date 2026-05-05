@@ -26,20 +26,20 @@ withDefaults(defineProps<Props>(), { highlight: false })
   flex-direction: column;
   gap: 0.5rem;
   padding: 1rem 1.25rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: 8px;
-  background: #fff;
+  background: var(--bg-elevated);
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .order-card:hover {
-  border-color: #d1d5db;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  border-color: var(--border-strong);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .order-card.highlight {
-  border-color: #2563eb;
-  background: #f8fafc;
+  border-color: var(--accent);
+  background: #16213a;
 }
 
 .order-card header {
@@ -53,13 +53,13 @@ withDefaults(defineProps<Props>(), { highlight: false })
   margin: 0;
   font-size: 1rem;
   font-weight: 600;
-  color: #111827;
+  color: var(--text);
 }
 
 .meta {
   margin: 0;
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .status {
@@ -69,13 +69,13 @@ withDefaults(defineProps<Props>(), { highlight: false })
   border-radius: 999px;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  background: #f3f4f6;
-  color: #374151;
+  background: #1f2937;
+  color: #d1d5db;
 }
 
-.status--paid { background: #ecfdf5; color: #047857; }
-.status--shipped { background: #eff6ff; color: #1d4ed8; }
-.status--delivered { background: #f0fdf4; color: #15803d; }
-.status--cancelled { background: #fef2f2; color: #b91c1c; }
-.status--pending { background: #fffbeb; color: #b45309; }
+.status--paid { background: #064e3b; color: #6ee7b7; }
+.status--shipped { background: #1e3a8a; color: #93c5fd; }
+.status--delivered { background: #14532d; color: #86efac; }
+.status--cancelled { background: #7f1d1d; color: #fca5a5; }
+.status--pending { background: #78350f; color: #fcd34d; }
 </style>
