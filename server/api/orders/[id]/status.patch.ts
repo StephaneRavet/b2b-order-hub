@@ -1,13 +1,14 @@
 import { z } from 'zod'
-import { orders } from '~~/server/utils/fixtures'
+import type { OrderStatus } from '#server/types/order'
+import { orders } from '#server/utils/fixtures'
 
-const ALLOWED_TRANSITIONS = {
+const ALLOWED_TRANSITIONS: Record<OrderStatus, OrderStatus[]> = {
   pending: ['paid', 'cancelled'],
   paid: ['shipped', 'cancelled'],
   shipped: ['delivered'],
   delivered: [],
   cancelled: [],
-} as const
+}
 
 const statusSchema = z.object({
   status: z.enum(['pending', 'paid', 'shipped', 'delivered', 'cancelled']),
