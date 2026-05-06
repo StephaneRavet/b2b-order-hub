@@ -1,4 +1,4 @@
-import type { Product } from '~/types/product'
+import type { Product } from '#shared/types/product'
 
 const products: Product[] = [
   { id: 1, sku: 'A100', name: 'Vis M6', price: 0.50, stock: 1500 },

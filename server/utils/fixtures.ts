@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
-import { ORDER_STATUSES, type Order } from '#server/types/order'
-import type { Product } from '~/types/product'
+import { ORDER_STATUSES, type Order } from '#shared/types/order'
+import type { Product } from '#shared/types/product'
 
 faker.seed(42)
 

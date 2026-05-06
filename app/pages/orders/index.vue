@@ -4,15 +4,19 @@ import {
     ORDER_STATUSES,
     type OrderStatus,
     type OrdersPage,
-} from '#server/types/order'
+} from '#shared/types/order'
+
+definePageMeta({ middleware: 'auth' })
 
 const PER_PAGE = 20
+const api = useApi()
 
 const page = useRouteQuery<number>('page', { default: 1 })
 const status = useRouteQuery<OrderStatus | ''>('status', { default: '', resetKeys: ['page'] })
 const search = useRouteQuery<string>('q', { default: '', resetKeys: ['page'] })
 
 const { data, pending, error, refresh } = await useFetch<OrdersPage>('/api/orders', {
+    $fetch: api,
     query: { page, status, q: search, perPage: PER_PAGE },
 })
 </script>

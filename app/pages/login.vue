@@ -2,7 +2,10 @@
 import { useVuelidate } from '@vuelidate/core'
 import { email, helpers, minLength, required } from '@vuelidate/validators'
 
-definePageMeta({ layout: 'auth' })
+definePageMeta({ layout: 'auth', middleware: 'guest' })
+
+const { login } = useAuth()
+const route = useRoute()
 
 const ALLOWED_DOMAINS = ['equation.fr', 'example.com']
 
@@ -41,8 +44,9 @@ async function submit() {
 
     submitting.value = true
     try {
-        await $fetch('/api/auth/login', { method: 'POST', body: form })
-        await navigateTo('/orders')
+        await login(form.email, form.password)
+        const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : '/orders'
+        await navigateTo(redirect)
     }
     catch (err: unknown) {
         const status = (err as { statusCode?: number }).statusCode

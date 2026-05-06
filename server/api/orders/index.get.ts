@@ -1,4 +1,4 @@
-import type { Order } from '#server/types/order'
+import type { Order } from '#shared/types/order'
 import { orders } from '~~/server/utils/fixtures'
 
 export default defineEventHandler((event) => {

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import type { OrderStatus } from '#server/types/order'
+import type { OrderStatus } from '#shared/types/order'
 import { orders } from '#server/utils/fixtures'
 
 const ALLOWED_TRANSITIONS: Record<OrderStatus, OrderStatus[]> = {

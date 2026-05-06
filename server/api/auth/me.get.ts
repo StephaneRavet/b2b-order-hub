@@ -1,4 +1,4 @@
-import type { User } from '~/types/user'
+import type { User } from '#shared/types/user'
 
 export default defineEventHandler((event) => {
   const auth = getHeader(event, 'authorization')

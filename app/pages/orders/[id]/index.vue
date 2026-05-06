@@ -1,15 +1,18 @@
 <script setup lang="ts">
-import type { Order } from '#server/types/order'
+import type { Order } from '#shared/types/order'
 
 definePageMeta({
+    middleware: 'auth',
     validate: (route) => /^\d+$/.test(route.params.id as string),
 })
 
 const route = useRoute()
 const orderId = Number(route.params.id)
+const api = useApi()
 
 const { data: order, pending, error, refresh } = await useFetch<Order>(
     `/api/orders/${orderId}`,
+    { $fetch: api },
 )
 </script>
 
