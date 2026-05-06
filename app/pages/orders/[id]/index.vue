@@ -1,75 +1,91 @@
 <script setup lang="ts">
 import type { Order } from '#server/types/order'
 
-const route = useRoute()
-const orderId = route.params.id
-
-const { data: order, pending, error } = await useFetch<Order>(`/api/orders/${orderId}`, {
-    server: false,
+definePageMeta({
+    validate: (route) => /^\d+$/.test(route.params.id as string),
 })
 
-const formatDate = (iso: string) =>
-    new Date(iso).toLocaleString('fr-FR', {
-        dateStyle: 'medium',
-        timeStyle: 'short',
-    })
+const route = useRoute()
+const orderId = Number(route.params.id)
+
+const { data: order, pending, error, refresh } = await useFetch<Order>(
+    `/api/orders/${orderId}`,
+)
 </script>
 
 <template>
-    <div v-if="pending" class="state">Chargement...</div>
-    <div v-else-if="error" class="state state--error">Erreur : {{ error.message }}</div>
-    <article v-else-if="order" class="order">
-        <header class="order-head">
-            <div>
-                <NuxtLink to="/orders" class="back">← Retour</NuxtLink>
+    <div class="order-page">
+        <NuxtLink to="/orders" class="back">← Retour à la liste</NuxtLink>
+
+        <UiSpinner v-if="pending" label="Chargement…" />
+        <UiAlert v-else-if="error" :error="error" @retry="refresh()" />
+
+        <article v-else-if="order" class="order">
+            <header class="order-head">
                 <h1>Commande #{{ order.id }}</h1>
-            </div>
-            <span :class="['status', `status--${order.status}`]">{{ order.status }}</span>
-        </header>
+                <UiBadge :variant="order.status">{{ order.status }}</UiBadge>
+            </header>
 
-        <dl class="meta card">
-            <div>
-                <dt>Client</dt>
-                <dd>#{{ order.customerId }}</dd>
-            </div>
-            <div>
-                <dt>Créée le</dt>
-                <dd>{{ formatDate(order.createdAt) }}</dd>
-            </div>
-            <div>
-                <dt>Articles</dt>
-                <dd>{{ order.items.length }}</dd>
-            </div>
-        </dl>
+            <dl class="meta card">
+                <div>
+                    <dt>Client</dt>
+                    <dd>#{{ order.customerId }}</dd>
+                </div>
+                <div>
+                    <dt>Créée le</dt>
+                    <dd>{{ formatDate(order.createdAt, true) }}</dd>
+                </div>
+                <div>
+                    <dt>Articles</dt>
+                    <dd>{{ order.items.length }}</dd>
+                </div>
+                <div>
+                    <dt>Total</dt>
+                    <dd>{{ formatPrice(order.total) }}</dd>
+                </div>
+            </dl>
 
-        <section>
-            <h2>Articles</h2>
-            <table class="items card">
-                <thead>
-                    <tr>
-                        <th>Produit</th>
-                        <th class="num">Quantité</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="item in order.items" :key="item.productId">
-                        <td>#{{ item.productId }}</td>
-                        <td class="num">{{ item.quantity }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-    </article>
+            <section>
+                <h2>Lignes</h2>
+                <table class="items card">
+                    <thead>
+                        <tr>
+                            <th>Produit</th>
+                            <th class="num">Qté</th>
+                            <th class="num">P.U.</th>
+                            <th class="num">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in order.items" :key="item.productId">
+                            <td>#{{ item.productId }}</td>
+                            <td class="num">{{ item.quantity }}</td>
+                            <td class="num">{{ formatPrice(item.unitPrice) }}</td>
+                            <td class="num">{{ formatPrice(item.quantity * item.unitPrice) }}</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" class="num"><strong>Total</strong></td>
+                            <td class="num"><strong>{{ formatPrice(order.total) }}</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </section>
+        </article>
+    </div>
 </template>
 
 <style scoped>
-.state {
-    padding: 2rem;
-    color: var(--text-muted);
+.order-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
 }
 
-.state--error {
-    color: #fca5a5;
+.back {
+    font-size: 0.875rem;
+    color: var(--text-muted);
 }
 
 .order {
@@ -80,18 +96,11 @@ const formatDate = (iso: string) =>
 
 .order-head {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
     gap: 1rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid var(--border);
-}
-
-.back {
-    display: inline-block;
-    margin-bottom: 0.5rem;
-    font-size: 0.875rem;
-    color: var(--text-muted);
 }
 
 .order-head h1 {
@@ -158,9 +167,13 @@ section h2 {
     background: #0f1521;
 }
 
+.items tfoot td {
+    border-top: 1px solid var(--border);
+    border-bottom: 0;
+}
+
 .items .num {
     text-align: right;
     font-variant-numeric: tabular-nums;
 }
-
 </style>

@@ -1,24 +1,37 @@
 <script setup lang="ts">
 const value = defineModel<string>({ default: '' })
+defineProps<{ label?: string; placeholder?: string }>()
 </script>
 
 <template>
-    <input v-model="value" type="search" placeholder="Rechercher…" class="search-input" />
+    <label class="search-input">
+        <span v-if="label" class="search-input__label">{{ label }}</span>
+        <input
+            v-model="value"
+            type="search"
+            :placeholder="placeholder ?? 'Rechercher…'"
+            class="search-input__control"
+        />
+    </label>
 </template>
 
 <style scoped>
 .search-input {
-    width: 100%;
-    padding: 0.5rem 0.75rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.375rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
     font-size: 0.875rem;
-    margin-bottom: 1rem;
 }
 
-.search-input:focus {
-    outline: none;
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+.search-input__label {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.search-input__control {
+    width: 100%;
+    font-size: 0.875rem;
 }
 </style>
