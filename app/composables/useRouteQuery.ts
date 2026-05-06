@@ -1,4 +1,5 @@
 import type { WritableComputedRef } from 'vue'
+import type { LocationQueryRaw } from 'vue-router'
 
 type Options<T> = {
     default: T
@@ -24,7 +25,7 @@ export function useRouteQuery<T extends string | number>(
         },
         set: (value) => {
             const isDefault = value === opts.default || value === '' || value === 0
-            const nextQuery: Record<string, unknown> = {
+            const nextQuery: LocationQueryRaw = {
                 ...route.query,
                 [key]: isDefault ? undefined : value,
             }

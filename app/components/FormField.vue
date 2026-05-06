@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import type { Ref } from 'vue'
+
 type Validation = {
     $error: boolean
-    $errors: Array<{ $message: string }>
+    $errors: Array<{ $message: string | Ref<string> }>
     $touch: () => void
     $pending?: boolean
 }
@@ -36,7 +38,7 @@ const inputId = useId()
             Vérification…
         </small>
         <small v-else-if="validation?.$error" class="form-field__error">
-            {{ validation.$errors[0].$message }}
+            {{ validation.$errors[0]?.$message }}
         </small>
     </div>
 </template>

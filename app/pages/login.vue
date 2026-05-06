@@ -9,7 +9,7 @@ const ALLOWED_DOMAINS = ['equation.fr', 'example.com']
 const domainAllowed = helpers.withAsync(async (value: string) => {
     if (!value || !value.includes('@')) return true
     await new Promise((r) => setTimeout(r, 300))
-    const domain = value.split('@')[1]
+    const domain = value.split('@')[1] ?? ''
     return ALLOWED_DOMAINS.includes(domain)
 })
 
