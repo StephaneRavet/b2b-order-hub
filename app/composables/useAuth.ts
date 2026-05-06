@@ -1,43 +1,36 @@
 import type { User } from '#shared/types/user'
 
 export const useAuth = () => {
-    const token = useCookie<string | null>('auth_token', {
-        default: () => null,
-        secure: true,
-        sameSite: 'lax',
-    })
     const user = useState<User | null>('auth_user', () => null)
-
-    const isAuthenticated = computed(() => !!token.value)
+    const isAuthenticated = computed(() => !!user.value)
 
     async function login(email: string, password: string) {
-        const data = await $fetch<{ token: string, user: User }>('/api/auth/login', {
+        const data = await $fetch<{ user: User }>('/api/auth/login', {
             method: 'POST',
             body: { email, password },
         })
-        token.value = data.token
         user.value = data.user
     }
 
     async function fetchMe() {
-        if (!token.value) return
         try {
-            user.value = await $fetch<User>('/api/auth/me', {
-                headers: { Authorization: `Bearer ${token.value}` },
-            })
+            user.value = await $fetch<User>('/api/auth/me')
         }
-        catch (err) {
-            console.error('[useAuth.fetchMe]', err)
-            token.value = null
+        catch {
             user.value = null
         }
     }
 
-    function logout() {
-        token.value = null
+    async function logout() {
+        try {
+            await $fetch('/api/auth/logout', { method: 'POST' })
+        }
+        catch (err) {
+            console.error('[useAuth.logout]', err)
+        }
         user.value = null
-        navigateTo('/login')
+        await navigateTo('/login')
     }
 
-    return { token, user, isAuthenticated, login, logout, fetchMe }
+    return { user, isAuthenticated, login, logout, fetchMe }
 }
