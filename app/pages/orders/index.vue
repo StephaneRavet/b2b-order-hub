@@ -11,6 +11,11 @@ type OrdersResponse = {
 const { data, pending, error } = await useFetch<OrdersResponse>('/api/orders', {
     server: false,
 })
+
+const search = ref('')
+const filtered = computed(() =>
+    (data.value?.items ?? []).filter((o) => String(o.id).includes(search.value)),
+)
 </script>
 
 <template>
@@ -18,9 +23,12 @@ const { data, pending, error } = await useFetch<OrdersResponse>('/api/orders', {
         <h1>📦 Mes commandes</h1>
         <div v-if="pending">Chargement...</div>
         <div v-else-if="error">Erreur : {{ error.message }}</div>
-        <div v-else class="orders-grid">
-            <OrderCard v-for="order in data?.items ?? []" :key="order.id" :order="order" />
-        </div>
+        <template v-else>
+            <SearchInput v-model="search" />
+            <div class="orders-grid">
+                <OrderCard v-for="order in filtered" :key="order.id" :order="order" />
+            </div>
+        </template>
     </div>
 </template>
 
