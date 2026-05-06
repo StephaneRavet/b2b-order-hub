@@ -16,13 +16,14 @@ defineProps<{
     placeholder?: string
     autocomplete?: string
     validation?: Validation
+    serverError?: string
 }>()
 
 const inputId = useId()
 </script>
 
 <template>
-    <div class="form-field" :class="{ 'has-error': validation?.$error }">
+    <div class="form-field" :class="{ 'has-error': validation?.$error || !!serverError }">
         <label :for="inputId">{{ label }}</label>
         <input
             :id="inputId"
@@ -30,7 +31,7 @@ const inputId = useId()
             :type="type ?? 'text'"
             :placeholder="placeholder"
             :autocomplete="autocomplete"
-            :aria-invalid="validation?.$error"
+            :aria-invalid="validation?.$error || !!serverError"
             class="form-field__control"
             @blur="validation?.$touch()"
         />
@@ -39,6 +40,9 @@ const inputId = useId()
         </small>
         <small v-else-if="validation?.$error" class="form-field__error">
             {{ validation.$errors[0]?.$message }}
+        </small>
+        <small v-else-if="serverError" class="form-field__error">
+            {{ serverError }}
         </small>
     </div>
 </template>
