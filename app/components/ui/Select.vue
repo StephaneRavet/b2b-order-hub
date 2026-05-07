@@ -1,12 +1,17 @@
 <script setup lang="ts">
-const value = defineModel<string>({ default: '' })
+const [value, modifiers] = defineModel<string | number>({ default: '' })
 defineProps<{ label?: string }>()
+
+const proxy = computed({
+    get: () => value.value,
+    set: (v) => { value.value = modifiers.number ? Number(v) : v },
+})
 </script>
 
 <template>
     <label class="ui-select">
         <span v-if="label" class="ui-select__label">{{ label }}</span>
-        <select v-model="value" class="ui-select__control">
+        <select v-model="proxy" class="ui-select__control">
             <slot />
         </select>
     </label>

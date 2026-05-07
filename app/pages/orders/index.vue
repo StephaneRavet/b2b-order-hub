@@ -8,8 +8,10 @@ import {
 
 definePageMeta({ middleware: 'auth' })
 
-const PER_PAGE = 20
 const api = useApi()
+const prefsStore = useOrdersPrefsStore()
+const { perPage, density, rowPadding } = storeToRefs(prefsStore)
+const { isNew, markVisited } = prefsStore
 
 const page = useRouteQuery<number>('page', { default: 1 })
 const status = useRouteQuery<OrderStatus | ''>('status', { default: '', resetKeys: ['page'] })
@@ -17,8 +19,11 @@ const search = useRouteQuery<string>('q', { default: '', resetKeys: ['page'] })
 
 const { data, pending, error, refresh } = await useFetch<OrdersPage>('/api/orders', {
     $fetch: api,
-    query: { page, status, q: search, perPage: PER_PAGE },
+    query: { page, status, q: search, perPage },
+    watch: [perPage],
 })
+
+watch(data, (val) => { if (val) markVisited() }, { once: true })
 </script>
 
 <template>
@@ -38,6 +43,15 @@ const { data, pending, error, refresh } = await useFetch<OrdersPage>('/api/order
                         {{ ORDER_STATUS_LABELS[s] }}
                     </option>
                 </UiSelect>
+                <UiSelect v-model.number="perPage" label="Par page" class="orders__perpage">
+                    <option :value="10">10</option>
+                    <option :value="20">20</option>
+                    <option :value="50">50</option>
+                </UiSelect>
+                <UiSelect v-model="density" label="Densité" class="orders__density">
+                    <option value="comfy">Confort</option>
+                    <option value="compact">Compact</option>
+                </UiSelect>
             </div>
         </header>
 
@@ -47,9 +61,14 @@ const { data, pending, error, refresh } = await useFetch<OrdersPage>('/api/order
 
         <ul v-else class="orders__list">
             <li v-for="order in data.items" :key="order.id">
-                <NuxtLink :to="`/orders/${order.id}`" class="order-row card card--interactive">
+                <NuxtLink
+                    :to="`/orders/${order.id}`"
+                    :style="{ padding: rowPadding }"
+                    class="order-row card card--interactive"
+                >
                     <div class="order-row__main">
                         <strong>#{{ order.id }}</strong>
+                        <UiBadge v-if="isNew(order.createdAt)" variant="info">Nouveau</UiBadge>
                         <UiBadge :variant="order.status">{{ order.status }}</UiBadge>
                     </div>
                     <div class="order-row__meta">

@@ -80,6 +80,7 @@ button:hover {
 .status--delivered { background: #14532d; color: #86efac; }
 .status--cancelled { background: #7f1d1d; color: #fca5a5; }
 .status--pending   { background: #78350f; color: #fcd34d; }
+.status--info      { background: #1e40af; color: #bfdbfe; }
 
 /* Card */
 .card {
